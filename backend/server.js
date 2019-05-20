@@ -29,7 +29,8 @@ todoRoutes.route('/').get(function(req, res){
 })
 
 todoRoutes.route('/:id').get(function(req, res){
-    let id = req.param.id
+    let id = req.params.id
+    console.log(id)
     Todo.findById(id, function(err, todo){
         if(err){
             console.log(err)
