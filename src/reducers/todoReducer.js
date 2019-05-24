@@ -1,10 +1,11 @@
 import axios from "axios"
 const initialState = {
-  todos: []
+  todos: [],
+  todo_description: ''
 }
 
 export const VIEW_DATA_SUCCESS = 'VIEW_DATA_SUCCESS'
-
+export const SEARCH_CHANGE_DESCRIPTION = 'SEARCH_CHANGE_DESCRIPTION'
 
 export const viewData = (props) => {
   debugger
@@ -33,11 +34,24 @@ export function viewDataSuccess(payload) {
   }
 }
 
+export function searchChangeDescription(payload){
+  return{
+    type: SEARCH_CHANGE_DESCRIPTION,
+    description: payload
+  }
+}
+
 const ACTION_HANDLERS = {
   [VIEW_DATA_SUCCESS]: (state, action) => {
     return {
       ...state,
       todos: action.viewDataDetails
+    }
+  },
+  [SEARCH_CHANGE_DESCRIPTION]: (state, action) => {
+    return{
+      ...state,
+      todo_description: action.description
     }
   }
 

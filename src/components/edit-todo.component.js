@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 
 import axios from "axios"
+import { Switch, Route } from 'react-router-dom'
+import TodoList from './todos-list.component'
 import { connect } from "react-redux"
-import {viewDataChange, onChangeTodoDescription, onChangeTodoResponsible, onChangeTodoPriority, onChangeTodoCompleted, viewDataUpdate} from '../reducers/editReducer'
- class EditTodo extends Component {
+import { viewDataChange, onChangeTodoDescription, onChangeTodoResponsible, onChangeTodoPriority, onChangeTodoCompleted, viewDataUpdate } from '../reducers/editReducer'
+class EditTodo extends Component {
 
     constructor(props) {
         super(props)
@@ -17,7 +19,7 @@ import {viewDataChange, onChangeTodoDescription, onChangeTodoResponsible, onChan
 
     async componentDidMount() {
         this.props.viewDataChange(this.props)
-      
+
     }
     // onChangeTodoDescription(e) {
     //     this.setState({
@@ -56,8 +58,8 @@ import {viewDataChange, onChangeTodoDescription, onChangeTodoResponsible, onChan
         //     .then(res => console.log(res.data))
         // 
         this.props.viewDataUpdate(this.props, obj)
-        this.props.history.push('/');
-        
+        window.history.back();
+
 
     }
 
@@ -157,13 +159,13 @@ const mapStateToProps = (state) => {
     }
 }
 const mapDispatchToProps = (dispatch) => {
-    return{
-        viewDataChange: (props) => {dispatch(viewDataChange(props))},
-        onChangeTodoDescription: (props) => {dispatch(onChangeTodoDescription(props))},
-        onChangeTodoResponsible: (props) => {dispatch(onChangeTodoResponsible(props))},
-        onChangeTodoPriority: (props) => {dispatch(onChangeTodoPriority(props))},
-        onChangeTodoCompleted: (props) => {dispatch(onChangeTodoCompleted(props))},
-        viewDataUpdate: (props, obj) => {dispatch(viewDataUpdate(props, obj))}
+    return {
+        viewDataChange: (props) => { dispatch(viewDataChange(props)) },
+        onChangeTodoDescription: (props) => { dispatch(onChangeTodoDescription(props)) },
+        onChangeTodoResponsible: (props) => { dispatch(onChangeTodoResponsible(props)) },
+        onChangeTodoPriority: (props) => { dispatch(onChangeTodoPriority(props)) },
+        onChangeTodoCompleted: (props) => { dispatch(onChangeTodoCompleted(props)) },
+        viewDataUpdate: (props, obj) => { dispatch(viewDataUpdate(props, obj)) }
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(EditTodo)

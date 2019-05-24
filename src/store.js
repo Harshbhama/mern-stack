@@ -3,13 +3,14 @@ import promise from "redux-promise-middleware"
 
 // import editReducer from './reducers/editReducer'
 import todoReducer from "./reducers/todoReducer";
-import editReducer from './reducers/editReducer'
+import editReducer from './reducers/editReducer';
+import createReducer from './reducers/createReducer'
 import thunk from "redux-thunk"
 //export default createStore(todoReducer, applyMiddleware(thunk))
 //export default applyMiddleware(thunk)(createStore)(todoReducer);
 
 const reducer = combineReducers({
-    todoReducer, editReducer
+    todoReducer, editReducer, createReducer
 })
 const store = createStore(reducer, applyMiddleware(thunk))
 // export default createStore(
