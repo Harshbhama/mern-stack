@@ -7,6 +7,8 @@ const initialState = {
 export const VIEW_DATA_SUCCESS = 'VIEW_DATA_SUCCESS'
 export const SEARCH_CHANGE_DESCRIPTION = 'SEARCH_CHANGE_DESCRIPTION'
 
+export const VIEW_SEARCH_DATA = 'VIEW_SEARCH_DATA'
+
 export const viewData = (props) => {
   debugger
   return (dispatch) => {
@@ -26,6 +28,27 @@ export const viewData = (props) => {
     })
   }
 }
+
+export const viewSeachData = (obj) => {
+  debugger
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      axios.post('http://localhost:4000/todos/search', obj)
+        .then(response => {
+          //console.log(response)
+          console.log(response.data)
+          dispatch(viewSearchSuccess(response.data));
+          resolve(true);
+
+
+        }).catch(error => {
+          //console.log(error)
+          reject(true);
+        })
+    })
+  }
+}
+
 export function viewDataSuccess(payload) {
   debugger
   return {
@@ -41,6 +64,14 @@ export function searchChangeDescription(payload){
   }
 }
 
+export function viewSearchSuccess(payload){
+  return{
+    type: VIEW_SEARCH_DATA,
+    viewSearchDetails: payload
+  }
+}
+
+
 const ACTION_HANDLERS = {
   [VIEW_DATA_SUCCESS]: (state, action) => {
     return {
@@ -52,6 +83,13 @@ const ACTION_HANDLERS = {
     return{
       ...state,
       todo_description: action.description
+    }
+  },
+
+  [VIEW_SEARCH_DATA]: (state, action) => {
+    return{
+        ...state,
+        todos: action.viewSearchDetails
     }
   }
 

@@ -6,7 +6,7 @@ import axios from "axios";
 
 import { connect } from 'react-redux'
 import viewDetail from '../reducers/todoReducer'
-import { viewData, searchChangeDescription } from "../reducers/todoReducer";
+import { viewData, viewSeachData } from "../reducers/todoReducer";
 import Search from "../Search";
 
 const Todo = props => (
@@ -88,13 +88,20 @@ class TodoList extends Component {
     const obj = {
       query: this.state.search_val
     }
+
+
    
-    axios.post('http://localhost:4000/todos/search', obj)
-    .then(response => {
-     console.log(response)
-    }).catch(error => {
-      console.log(error)
+    // axios.post('http://localhost:4000/todos/search', obj)
+    // .then(response => {
+    //  console.log(response)
+    // }).catch(error => {
+    //   console.log(error)
       
+    // })
+    this.props.viewSeachData(obj);
+    console.log(this.props.todos)
+    return this.props.todos.map(function (currentTodo, index) {
+      return <Todo todo={currentTodo} key={index} />
     })
   }
 
@@ -147,7 +154,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     viewData: () => { dispatch(viewData()) },
-    searchChangeDescription: (x) => { dispatch(searchChangeDescription(x)) }
+    viewSeachData: (obj) => {dispatch(viewSeachData(obj))}
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList)

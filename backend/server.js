@@ -84,6 +84,7 @@ todoRoutes.route('/search').post(function (req, res) {
     }
   }, function (err, description) {
     //console.log(Todo)
+    res.json(description)
     console.log(description)
   })
 
