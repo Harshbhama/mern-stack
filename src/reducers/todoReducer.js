@@ -1,11 +1,16 @@
 import axios from "axios"
 const initialState = {
   todos: [],
-  todo_description: ''
+  todo_description: '',
+  search: false,
+  display: false
 }
 
 export const VIEW_DATA_SUCCESS = 'VIEW_DATA_SUCCESS'
 export const SEARCH_CHANGE_DESCRIPTION = 'SEARCH_CHANGE_DESCRIPTION'
+export const  SEARCH_STATUS = 'SEARCH_STATUS'
+
+export const DISPLAY_STATUS = 'DISPLAY_STATUS'
 
 export const VIEW_SEARCH_DATA = 'VIEW_SEARCH_DATA'
 
@@ -70,6 +75,19 @@ export function viewSearchSuccess(payload){
     viewSearchDetails: payload
   }
 }
+export function searchStatus(status){
+  return{
+    type: SEARCH_STATUS,
+    status: status
+  }
+}
+
+export function displayStatus(status){
+  return{
+    type: DISPLAY_STATUS,
+    status: status
+  }
+}
 
 
 const ACTION_HANDLERS = {
@@ -91,8 +109,21 @@ const ACTION_HANDLERS = {
         ...state,
         todos: action.viewSearchDetails
     }
-  }
+  },
 
+  [SEARCH_STATUS]: (state, action) => {
+    return{
+      ...state,
+      search: action.status
+    }
+  },
+
+  [DISPLAY_STATUS]: (state, action) => {
+    return{
+      ...state,
+      display: action.status
+    }
+  }
 }
 
 export default function todoReducer(state = initialState, action) {
