@@ -90,6 +90,22 @@ todoRoutes.route('/search').post(function (req, res) {
 
 })
 
+todoRoutes.route('/delete').post(function (req, res){
+  console.log(req.body)
+  Todo.deleteOne({_id: req.body.id}, function(err,todo){
+     if(err){
+       console.log(err)
+     }
+     else
+     //res.json(todo)
+     console.log(todo)
+  })
+  Todo.find({}, function(err, todo){
+    console.log(todo)
+    res.json(todo)
+  })
+})
+
 
 app.use(cors())
 app.use(bodyParser.json())

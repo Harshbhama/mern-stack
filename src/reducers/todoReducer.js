@@ -3,7 +3,8 @@ const initialState = {
   todos: [],
   todo_description: '',
   search: false,
-  display: false
+  display: false,
+  id: ''
 }
 
 export const VIEW_DATA_SUCCESS = 'VIEW_DATA_SUCCESS'
@@ -13,6 +14,7 @@ export const  SEARCH_STATUS = 'SEARCH_STATUS'
 export const DISPLAY_STATUS = 'DISPLAY_STATUS'
 
 export const VIEW_SEARCH_DATA = 'VIEW_SEARCH_DATA'
+export const VIEW_DELETE_DATA = 'VIEW_DELETE_DATA'
 
 export const viewData = (props) => {
   debugger
@@ -43,6 +45,25 @@ export const viewSeachData = (obj) => {
           //console.log(response)
           console.log(response.data)
           dispatch(viewSearchSuccess(response.data));
+          resolve(true);
+
+
+        }).catch(error => {
+          //console.log(error)
+          reject(true);
+        })
+    })
+  }
+}
+export const onDelete = (payload) => {
+  return(dispatch) => {
+    return new Promise((resolve, reject) => {
+      axios.post('http://localhost:4000/todos/delete', payload)
+        .then(response => {
+          //console.log(response)
+          console.log("ONDELETE")
+          console.log(response.data)
+          dispatch(viewDeleteData(response.data))
           resolve(true);
 
 
@@ -88,6 +109,12 @@ export function displayStatus(status){
     status: status
   }
 }
+export function viewDeleteData(payload){
+  return{
+    type: VIEW_DELETE_DATA,
+    viewDeleteDataDetails: payload
+  }
+}
 
 
 const ACTION_HANDLERS = {
@@ -123,7 +150,15 @@ const ACTION_HANDLERS = {
       ...state,
       display: action.status
     }
+  },
+  [VIEW_DELETE_DATA]: (state, action) => {
+    return{
+      ...state,
+      todos: action.viewDeleteDataDetails
+    }
   }
+  
+
 }
 
 export default function todoReducer(state = initialState, action) {
