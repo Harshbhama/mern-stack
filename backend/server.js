@@ -16,15 +16,24 @@ connection.once('open', function () {
   console.log("MongoDB databse connection established")
 })
 
-todoRoutes.route('/').get(function (req, res) {
-  Todo.find(function (err, todos) {
-    if (err) {
-      console.log(err)
-    }
-    else {
-      res.json(todos)
-    }
-  })
+todoRoutes.route('/').post(function (req, res) {
+  // Todo.find(function (err, todos) {
+  //   if (err) {
+  //     console.log(err)
+  //   }
+  //   else {
+  //     res.json(todos)
+  //   }
+  // })
+    Todo.paginate({}, { page: req.body.page, limit: 6 }, function(err, todos) {
+      if (err) {
+            console.log(err)
+          }
+          else {
+            console.log(todos.docs)
+            res.json(todos.docs)
+          }
+  });
 })
 
 todoRoutes.route('/:id').get(function (req, res) {

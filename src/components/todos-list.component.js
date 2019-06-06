@@ -8,7 +8,10 @@ import { connect } from 'react-redux'
 import viewDetail from '../reducers/todoReducer'
 import { viewData, viewSeachData, searchStatus, displayStatus, onDelete } from "../reducers/todoReducer";
 import Search from "../Search";
+import Pagination from 'react-paginate';
 
+
+import { Tooltip } from 'reactstrap';
 const Todo = props => (
   <tr>
     <td className={props.todo.todo_completed ? 'completed' : ''}>{props.todo.todo_description}</td>
@@ -18,7 +21,7 @@ const Todo = props => (
       <Link to={"/edit/" + props.todo._id}>Edit</Link>
     </td>
     <td>
-      <button onClick={(e) => props.onHandleDelete(props.todo._id)} > DELETE</button>
+      <button onClick={(e) => props.onHandleDelete(props.todo._id)}> DELETE</button>
     </td>
 
   </tr>
@@ -47,12 +50,17 @@ class TodoList extends Component {
     this.onChangeSearch = this.onChangeSearch.bind(this)
     this.onHandleSearch = this.onHandleSearch.bind(this)
     this.onHandleDelete = this.onHandleDelete.bind(this)
+    this.handlePageClick = this.handlePageClick.bind(this)
+
   }
 
   async componentDidMount() {
-    this.props.viewData()
-    //this.props.searchChangeDescription()
+    const page_obj = {
+      page: 1
+    }
+    this.props.viewData(page_obj)
   }
+
   onChangeSearch(e) {
     debugger
     this.setState({
@@ -73,56 +81,17 @@ class TodoList extends Component {
       id: id
     }
     this.props.onDelete(obj_new);
-    this.props.viewData()
+    const page_obj = {
+      page: 1
+    }
+    this.props.viewData(page_obj)
     console.log(this.props.todos)
 
   }
   onHandleSearch() {
-
-    // let abc = this.state.search_val
-    // let description
-    // let responsible
-    // let priority
-    // let id
-    // let temp = 0;
-    // this.props.todos.forEach(function (a, index) {
-    //   let z = [...a.todo_description]
-    //   let x = [...abc]
-    //   z.forEach(function (b, newindex) {
-    //     if ((z[newindex] === x[newindex]) && temp === 0) {
-    //       description = a.todo_description
-    //       responsible = a.todo_responsible
-    //       priority = a.todo_priority
-    //       id = a._id
-    //       //window.alert("OK")
-    //       //this.props.searchChangeDescription(a.todo_description)
-    //     }
-    //     else{
-    //       temp =1
-    //     }
-    //   })
-    //   temp = 0;
-    // })
-    // return <Todonew
-    //   todo_description={description}
-    //   todo_responsible = {responsible}
-    //   todo_priority = {priority}
-    //   id = {id}
-    // />
-
     const obj = {
       query: this.state.search_val
     }
-
-
-
-    // axios.post('http://localhost:4000/todos/search', obj)
-    // .then(response => {
-    //  console.log(response)
-    // }).catch(error => {
-    //   console.log(error)
-
-    // })
     if (this.props.search === true) {
       this.props.viewSeachData(obj);
     }
@@ -133,30 +102,34 @@ class TodoList extends Component {
   }
 
   todoList() {
-    // if(this.props.searchStatus === false){
-    //   this.props.viewData()
-    // }
     if (this.props.display === true) {
-      this.props.viewData()
+      const page_obj = {
+        page: 1
+      }
+      this.props.viewData(page_obj)
     }
     this.props.displayStatus(false)
-    //this.props.viewData();
-    //this.props.searchStatus(true)
     console.log(this.onHandleDelete)
     console.log(this.props.todos)
     return this.props.todos.map((currentTodo, index) => {
       return <Todo todo={currentTodo} key={index} onHandleDelete={this.onHandleDelete} />
     })
   }
+  handlePageClick(value) {
+    console.log(value.selected + 1)
+    let p = value.selected + 1
+    const page_obj = {
+      page: p
+    }
+    this.props.viewData(page_obj)
+  }
+
   render() {
+    const classes = 'tooltip-inner'
     return (
       <div>
-        {/* <Search 
-        todos = {this.props.todos}
-        /> */}
         <form>
           <input
-
             placeholder="Search"
             value={this.state.search_val}
             onChange={this.onChangeSearch}
@@ -176,6 +149,20 @@ class TodoList extends Component {
             {this.state.search_val === '' ? this.todoList() : this.onHandleSearch()}
           </tbody>
         </table>
+        <div className="pagination-box">
+          <Pagination
+            previousLabel={"Prev"}
+            nextLabel={"Next"}
+            breakLabel={"..."}
+            breakClassName={"break-me"}
+            pageCount={this.props.pages}
+            pageRangeDisplayed={5}
+            onPageChange={this.handlePageClick}
+            containerClassName={"pagination"}
+            subContainerClassName={"pages pagination"}
+            activeClassName={"active"}
+          />
+        </div>
       </div>
     )
   }
@@ -192,7 +179,7 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    viewData: () => { dispatch(viewData()) },
+    viewData: (page_obj) => { dispatch(viewData(page_obj)) },
     viewSeachData: (obj) => { dispatch(viewSeachData(obj)) },
     searchStatus: (status) => { dispatch(searchStatus(status)) },
     displayStatus: (status) => { dispatch(displayStatus(status)) },

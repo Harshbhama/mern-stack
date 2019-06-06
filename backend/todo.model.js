@@ -1,4 +1,5 @@
 const mongoose = require ('mongoose')
+const mongoosePaginate = require('mongoose-paginate');  
 const Schema = mongoose.Schema
 
 let Todo = new Schema({
@@ -22,5 +23,5 @@ let Todo = new Schema({
 //     console.log(Todo);
 //   });
 
-
+Todo.plugin(mongoosePaginate);
 module.exports = mongoose.model('Todo', Todo)

@@ -9,18 +9,17 @@ const initialState = {
 
 export const VIEW_DATA_SUCCESS = 'VIEW_DATA_SUCCESS'
 export const SEARCH_CHANGE_DESCRIPTION = 'SEARCH_CHANGE_DESCRIPTION'
-export const  SEARCH_STATUS = 'SEARCH_STATUS'
-
+export const SEARCH_STATUS = 'SEARCH_STATUS'
 export const DISPLAY_STATUS = 'DISPLAY_STATUS'
-
 export const VIEW_SEARCH_DATA = 'VIEW_SEARCH_DATA'
 export const VIEW_DELETE_DATA = 'VIEW_DELETE_DATA'
 
-export const viewData = (props) => {
+export const viewData = (page_obj) => {
   debugger
+  console.log(page_obj)
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      axios.get('http://localhost:4000/todos/')
+      axios.post('http://localhost:4000/todos/', page_obj)
         .then(response => {
           //console.log(response)
 
@@ -56,7 +55,7 @@ export const viewSeachData = (obj) => {
   }
 }
 export const onDelete = (payload) => {
-  return(dispatch) => {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       axios.post('http://localhost:4000/todos/delete', payload)
         .then(response => {
@@ -83,34 +82,34 @@ export function viewDataSuccess(payload) {
   }
 }
 
-export function searchChangeDescription(payload){
-  return{
+export function searchChangeDescription(payload) {
+  return {
     type: SEARCH_CHANGE_DESCRIPTION,
     description: payload
   }
 }
 
-export function viewSearchSuccess(payload){
-  return{
+export function viewSearchSuccess(payload) {
+  return {
     type: VIEW_SEARCH_DATA,
     viewSearchDetails: payload
   }
 }
-export function searchStatus(status){
-  return{
+export function searchStatus(status) {
+  return {
     type: SEARCH_STATUS,
     status: status
   }
 }
 
-export function displayStatus(status){
-  return{
+export function displayStatus(status) {
+  return {
     type: DISPLAY_STATUS,
     status: status
   }
 }
-export function viewDeleteData(payload){
-  return{
+export function viewDeleteData(payload) {
+  return {
     type: VIEW_DELETE_DATA,
     viewDeleteDataDetails: payload
   }
@@ -125,39 +124,39 @@ const ACTION_HANDLERS = {
     }
   },
   [SEARCH_CHANGE_DESCRIPTION]: (state, action) => {
-    return{
+    return {
       ...state,
       todo_description: action.description
     }
   },
 
   [VIEW_SEARCH_DATA]: (state, action) => {
-    return{
-        ...state,
-        todos: action.viewSearchDetails
+    return {
+      ...state,
+      todos: action.viewSearchDetails
     }
   },
 
   [SEARCH_STATUS]: (state, action) => {
-    return{
+    return {
       ...state,
       search: action.status
     }
   },
 
   [DISPLAY_STATUS]: (state, action) => {
-    return{
+    return {
       ...state,
       display: action.status
     }
   },
   [VIEW_DELETE_DATA]: (state, action) => {
-    return{
+    return {
       ...state,
       todos: action.viewDeleteDataDetails
     }
   }
-  
+
 
 }
 
