@@ -155,7 +155,7 @@ class TodoList extends Component {
             nextLabel={"Next"}
             breakLabel={"..."}
             breakClassName={"break-me"}
-            pageCount={this.props.pages}
+            pageCount={this.props.page}
             pageRangeDisplayed={5}
             onPageChange={this.handlePageClick}
             containerClassName={"pagination"}
@@ -173,7 +173,8 @@ const mapStateToProps = (state) => {
   return {
     todos: state.todoReducer.todos,
     search: state.todoReducer.search,
-    display: state.todoReducer.display
+    display: state.todoReducer.display,
+    page: state.todoReducer.page
   }
 
 }

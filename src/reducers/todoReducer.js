@@ -4,7 +4,8 @@ const initialState = {
   todo_description: '',
   search: false,
   display: false,
-  id: ''
+  id: '',
+  page: 10
 }
 
 export const VIEW_DATA_SUCCESS = 'VIEW_DATA_SUCCESS'
@@ -13,6 +14,7 @@ export const SEARCH_STATUS = 'SEARCH_STATUS'
 export const DISPLAY_STATUS = 'DISPLAY_STATUS'
 export const VIEW_SEARCH_DATA = 'VIEW_SEARCH_DATA'
 export const VIEW_DELETE_DATA = 'VIEW_DELETE_DATA'
+export const SET_TOTAL_PAGE = 'SET_TOTAL_PAGE'
 
 export const viewData = (page_obj) => {
   debugger
@@ -21,9 +23,11 @@ export const viewData = (page_obj) => {
     return new Promise((resolve, reject) => {
       axios.post('http://localhost:4000/todos/', page_obj)
         .then(response => {
-          //console.log(response)
-
-          dispatch(viewDataSuccess(response.data));
+          //console.log(response.data)
+          var p = Math.round((response.data.total / 6))
+          //console.log(p)
+          dispatch(setTotolPage(p))  
+          dispatch(viewDataSuccess(response.data.docs));
           resolve(true);
 
 
@@ -114,7 +118,12 @@ export function viewDeleteData(payload) {
     viewDeleteDataDetails: payload
   }
 }
-
+export function setTotolPage(payload){
+  return{
+    type: SET_TOTAL_PAGE,
+    page: payload
+  }
+}
 
 const ACTION_HANDLERS = {
   [VIEW_DATA_SUCCESS]: (state, action) => {
@@ -155,8 +164,13 @@ const ACTION_HANDLERS = {
       ...state,
       todos: action.viewDeleteDataDetails
     }
+  },
+  [SET_TOTAL_PAGE]: (state, action) => {
+    return{
+      ...state,
+      page: action.page
+    }
   }
-
 
 }
 

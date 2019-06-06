@@ -25,14 +25,15 @@ todoRoutes.route('/').post(function (req, res) {
   //     res.json(todos)
   //   }
   // })
-    Todo.paginate({}, { page: req.body.page, limit: 6 }, function(err, todos) {
-      if (err) {
-            console.log(err)
-          }
-          else {
-            console.log(todos.docs)
-            res.json(todos.docs)
-          }
+
+  Todo.paginate({}, { page: req.body.page, limit: 6 }, function (err, todos) {
+    if (err) {
+      console.log(err)
+    }
+    else {
+      console.log(todos)
+      res.json(todos)
+    }
   });
 })
 
@@ -99,17 +100,17 @@ todoRoutes.route('/search').post(function (req, res) {
 
 })
 
-todoRoutes.route('/delete').post(function (req, res){
+todoRoutes.route('/delete').post(function (req, res) {
   console.log(req.body)
-  Todo.deleteOne({_id: req.body.id}, function(err,todo){
-     if(err){
-       console.log(err)
-     }
-     else
-     //res.json(todo)
-     console.log(todo)
+  Todo.deleteOne({ _id: req.body.id }, function (err, todo) {
+    if (err) {
+      console.log(err)
+    }
+    else
+      //res.json(todo)
+      console.log(todo)
   })
-  Todo.find({}, function(err, todo){
+  Todo.find({}, function (err, todo) {
     console.log(todo)
     res.json(todo)
   })
