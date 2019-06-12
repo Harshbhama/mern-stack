@@ -34,3 +34,30 @@
 .completed{
   text-decoration: line-through;
 }
+
+.pagination-box {
+  background: #fff;
+  border-radius: 8px;
+  padding: 0px;
+  margin: 0 10px; 
+}
+.pagination-bg{
+  background-color: #fff;
+  box-shadow: 0px 6px 10px #7aa1ff;
+  overflow: hidden;
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+.pagination{
+  width: fit-content;
+    background-color: #b3e3ff;
+    
+}
+
+.pagination a{
+  color: #007bff;
+    text-decoration: none;
+    background-color: transparent;
+    padding-right: 10px !important
+}

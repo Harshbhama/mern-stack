@@ -4,8 +4,11 @@ const initialState = {
   todo_description: '',
   search: false,
   display: false,
+  weather_status: false,
   id: '',
-  page: 10
+  page: 10,
+  weather_data: '',
+  temp:''
 }
 
 export const VIEW_DATA_SUCCESS = 'VIEW_DATA_SUCCESS'
@@ -15,6 +18,9 @@ export const DISPLAY_STATUS = 'DISPLAY_STATUS'
 export const VIEW_SEARCH_DATA = 'VIEW_SEARCH_DATA'
 export const VIEW_DELETE_DATA = 'VIEW_DELETE_DATA'
 export const SET_TOTAL_PAGE = 'SET_TOTAL_PAGE'
+export const VIEW_WEATHER_DATA = 'VIEW_WEATHER_DATA'
+export const WEATHER_STATUS = 'WEATHER_STATUS'
+export const GET_TEMP = 'GET_TEMP'
 
 export const viewData = (page_obj) => {
   debugger
@@ -24,7 +30,7 @@ export const viewData = (page_obj) => {
       axios.post('http://localhost:4000/todos/', page_obj)
         .then(response => {
           //console.log(response.data)
-          var p = Math.round((response.data.total / 6))
+          var p = Math.ceil((response.data.total / 6))
           //console.log(p)
           dispatch(setTotolPage(p))  
           dispatch(viewDataSuccess(response.data.docs));
@@ -78,6 +84,22 @@ export const onDelete = (payload) => {
   }
 }
 
+export const fetchWeather = (data) => {
+  return(dispatch) => {
+    return new Promise((resolve, reject) => {
+      axios.get("http://api.openweathermap.org/data/2.5/weather?q=" + data.q + "&appid=" + data.appid)
+        .then(response => {
+          //console.log(response.data)
+          dispatch(viewWeatherData(response.data))
+          resolve(true);
+        }).catch(error => {
+          //console.log(error)
+          reject(true);
+        })
+    })
+  }
+}
+
 export function viewDataSuccess(payload) {
   debugger
   return {
@@ -112,6 +134,12 @@ export function displayStatus(status) {
     status: status
   }
 }
+export function weatherStatus(status){
+  return{
+    type: WEATHER_STATUS,
+    status: status
+  }
+}
 export function viewDeleteData(payload) {
   return {
     type: VIEW_DELETE_DATA,
@@ -124,7 +152,18 @@ export function setTotolPage(payload){
     page: payload
   }
 }
-
+export function viewWeatherData(payload){
+  return{
+    type: VIEW_WEATHER_DATA,
+    viewWeatherDataDetails: payload
+  }
+}
+export function getTemp(payload){
+  return{
+    type: GET_TEMP,
+    viewTemp: payload
+  }
+}
 const ACTION_HANDLERS = {
   [VIEW_DATA_SUCCESS]: (state, action) => {
     return {
@@ -159,6 +198,12 @@ const ACTION_HANDLERS = {
       display: action.status
     }
   },
+  [WEATHER_STATUS]: (state, action) => {
+    return{
+      ...state,
+      weather_status: action.status
+    }
+  },
   [VIEW_DELETE_DATA]: (state, action) => {
     return {
       ...state,
@@ -169,6 +214,19 @@ const ACTION_HANDLERS = {
     return{
       ...state,
       page: action.page
+    }
+  },
+  [VIEW_WEATHER_DATA]: (state, action) => {
+    return{
+      ...state,
+      weather_data: action.viewWeatherDataDetails
+    }
+  },
+
+  [GET_TEMP]: (state, action) => {
+    return{
+      ...state,
+      temp: action.viewTemp
     }
   }
 

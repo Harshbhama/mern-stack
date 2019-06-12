@@ -6,9 +6,13 @@ import axios from "axios";
 
 import { connect } from 'react-redux'
 import viewDetail from '../reducers/todoReducer'
-import { viewData, viewSeachData, searchStatus, displayStatus, onDelete } from "../reducers/todoReducer";
+import { viewData, viewSeachData, searchStatus, displayStatus, onDelete, fetchWeather, weatherStatus, getTemp } from "../reducers/todoReducer";
 import Search from "../Search";
 import Pagination from 'react-paginate';
+import WeatherSet from '../WeatherSet'
+
+
+// import Alert from './../Alert'
 
 
 import { Tooltip } from 'reactstrap';
@@ -26,18 +30,6 @@ const Todo = props => (
 
   </tr>
 )
-const Todonew = props => (
-  <tr>
-    <td >{props.todo_description}</td>
-    <td >{props.todo_responsible}</td>
-    <td >{props.todo_priority}</td>
-    <td>
-      <Link to={"/edit/" + props.id}>Edit</Link>
-    </td>
-
-  </tr>
-
-)
 
 class TodoList extends Component {
 
@@ -45,13 +37,14 @@ class TodoList extends Component {
     super(props);
 
     this.state = {
-      search_val: ''
+      search_val: '',
+      temp: ''
     }
     this.onChangeSearch = this.onChangeSearch.bind(this)
     this.onHandleSearch = this.onHandleSearch.bind(this)
     this.onHandleDelete = this.onHandleDelete.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
-
+    this.fetchWeather = this.fetchWeather.bind(this)
   }
 
   async componentDidMount() {
@@ -59,6 +52,7 @@ class TodoList extends Component {
       page: 1
     }
     this.props.viewData(page_obj)
+    this.props.weatherStatus(true)
   }
 
   onChangeSearch(e) {
@@ -76,16 +70,18 @@ class TodoList extends Component {
 
   onHandleDelete(id) {
     debugger
-    console.log(id)
-    const obj_new = {
-      id: id
+    if (window.confirm("ARE YOU SURE")) {
+      //console.log(id)
+      const obj_new = {
+        id: id
+      }
+      this.props.onDelete(obj_new);
+      const page_obj = {
+        page: 1
+      }
+      this.props.viewData(page_obj)
+      //console.log(this.props.todos)
     }
-    this.props.onDelete(obj_new);
-    const page_obj = {
-      page: 1
-    }
-    this.props.viewData(page_obj)
-    console.log(this.props.todos)
 
   }
   onHandleSearch() {
@@ -116,7 +112,7 @@ class TodoList extends Component {
     })
   }
   handlePageClick(value) {
-    console.log(value.selected + 1)
+    //console.log(value.selected + 1)
     let p = value.selected + 1
     const page_obj = {
       page: p
@@ -124,6 +120,32 @@ class TodoList extends Component {
     this.props.viewData(page_obj)
   }
 
+  fetchWeather() {
+    if (this.props.weather_status === true) {
+      const obj = {
+        q: 'Noida',
+        appid: 'd102dc7ecb892f7888141dfb21093f44'
+      }
+      this.props.fetchWeather(obj);
+    }
+    console.log(JSON.stringify(this.props.weather))
+    console.log(this.props.weather.main)
+    this.props.weatherStatus(false)
+    const myObject = this.props.weather.main
+    console.log(myObject)
+    for( var key in myObject){
+      if(key === 'temp'){
+
+        this.props.getTemp(myObject[key])
+        // abc.setState({
+        //   temp: (myObject[key])
+        // })     
+      }
+    }
+    console.log(this.props.temp)
+    //console.log(abc.state.temp)
+
+  }
   render() {
     const classes = 'tooltip-inner'
     return (
@@ -163,18 +185,27 @@ class TodoList extends Component {
             activeClassName={"active"}
           />
         </div>
+
+        <WeatherSet
+          fetchWeather={this.fetchWeather()}
+          temp = {this.props.temp}
+          // temp_detail = {this.props.weather.main.temp}
+        />
       </div>
     )
   }
 }
 
 const mapStateToProps = (state) => {
-  console.log(state)
+  //console.log(state)
   return {
     todos: state.todoReducer.todos,
     search: state.todoReducer.search,
     display: state.todoReducer.display,
-    page: state.todoReducer.page
+    page: state.todoReducer.page,
+    weather: state.todoReducer.weather_data,
+    weather_status: state.todoReducer.weather_status,
+    temp: state.todoReducer.temp
   }
 
 }
@@ -183,8 +214,11 @@ const mapDispatchToProps = (dispatch) => {
     viewData: (page_obj) => { dispatch(viewData(page_obj)) },
     viewSeachData: (obj) => { dispatch(viewSeachData(obj)) },
     searchStatus: (status) => { dispatch(searchStatus(status)) },
+    weatherStatus: (status) => { dispatch(weatherStatus(status)) },
     displayStatus: (status) => { dispatch(displayStatus(status)) },
-    onDelete: (obj_new) => { dispatch(onDelete(obj_new)) }
+    onDelete: (obj_new) => { dispatch(onDelete(obj_new)) },
+    fetchWeather: (obj) => { dispatch(fetchWeather(obj)) },
+    getTemp: (obj) => {dispatch(getTemp(obj))}
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList)
