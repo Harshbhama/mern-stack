@@ -70,6 +70,8 @@ const ACTION_HANDLERS = {
     }
   },
   [ON_CHANGE_COMPLETED]: (state, action) => {
+    console.log(action.e)
+    debugger
     return {
       ...state,
       todo_completed: action.e.target.value

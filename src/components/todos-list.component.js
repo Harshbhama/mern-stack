@@ -45,6 +45,7 @@ class TodoList extends Component {
     this.onHandleDelete = this.onHandleDelete.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.fetchWeather = this.fetchWeather.bind(this)
+    //this.myTimer = this.myTimer.bind(this)
   }
 
   async componentDidMount() {
@@ -53,7 +54,33 @@ class TodoList extends Component {
     }
     this.props.viewData(page_obj)
     this.props.weatherStatus(true)
-  }
+
+
+
+    //SET INTERVAL METHOD FOR WEATHER API
+
+    this.interval = setInterval(() => {
+      const obj = {
+        q: 'Noida',
+        appid: 'd102dc7ecb892f7888141dfb21093f44'
+      }
+      this.props.fetchWeather(obj);
+
+      //this.props.weatherStatus(false)
+      const myObject = this.props.weather.main
+      console.log(myObject)
+      for (var key in myObject) {
+        if (key === 'temp') {
+
+          this.props.getTemp(myObject[key])
+          // abc.setState({
+          //   temp: (myObject[key])
+          // })     
+        }
+      }
+
+    }, 5000)
+   }
 
   onChangeSearch(e) {
     debugger
@@ -128,13 +155,11 @@ class TodoList extends Component {
       }
       this.props.fetchWeather(obj);
     }
-    console.log(JSON.stringify(this.props.weather))
-    console.log(this.props.weather.main)
     this.props.weatherStatus(false)
     const myObject = this.props.weather.main
     console.log(myObject)
-    for( var key in myObject){
-      if(key === 'temp'){
+    for (var key in myObject) {
+      if (key === 'temp') {
 
         this.props.getTemp(myObject[key])
         // abc.setState({
@@ -188,8 +213,8 @@ class TodoList extends Component {
 
         <WeatherSet
           fetchWeather={this.fetchWeather()}
-          temp = {this.props.temp}
-          // temp_detail = {this.props.weather.main.temp}
+          temp={this.props.temp}
+        // temp_detail = {this.props.weather.main.temp}
         />
       </div>
     )
@@ -205,7 +230,7 @@ const mapStateToProps = (state) => {
     page: state.todoReducer.page,
     weather: state.todoReducer.weather_data,
     weather_status: state.todoReducer.weather_status,
-    temp: state.todoReducer.temp
+    temp: state.todoReducer.temp - 273
   }
 
 }
@@ -218,7 +243,7 @@ const mapDispatchToProps = (dispatch) => {
     displayStatus: (status) => { dispatch(displayStatus(status)) },
     onDelete: (obj_new) => { dispatch(onDelete(obj_new)) },
     fetchWeather: (obj) => { dispatch(fetchWeather(obj)) },
-    getTemp: (obj) => {dispatch(getTemp(obj))}
+    getTemp: (obj) => { dispatch(getTemp(obj)) }
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList)

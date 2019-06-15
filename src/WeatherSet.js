@@ -8,7 +8,6 @@ export default class WeatherSet extends React.Component{
         return(
             <div>
                 <span>Temperature is</span> {this.props.temp}
-               
             </div>
         )
     }

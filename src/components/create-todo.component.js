@@ -84,6 +84,20 @@ class CreateTodo extends Component {
               <label className="form-check-label ">High </label>
             </div>
           </div>
+          <div className="form-check">
+            <input type="checkbox"
+              className="form-check-input"
+              id="completedCheckbox"
+              name="completedCheckbox"
+              onChange={(e) => this.props.onChangeTodoCompleted(e)}
+              checked={this.props.todo_completed}
+              value={this.props.todo_completed}
+            />
+            <label className="form-check-label" htmlFor="completedCheckbox">
+              Completed
+            </label>
+          </div>
+          <br />
           <div className="form-group">
             <input type='submit' value='CreateTodo' className="btn btn-primary" />
           </div>
