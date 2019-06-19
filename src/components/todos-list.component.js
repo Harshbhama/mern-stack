@@ -6,7 +6,7 @@ import axios from "axios";
 
 import { connect } from 'react-redux'
 import viewDetail from '../reducers/todoReducer'
-import { viewData, viewSeachData, searchStatus, displayStatus, onDelete, fetchWeather, weatherStatus, getTemp } from "../reducers/todoReducer";
+import { viewData, viewSeachData, searchStatus, displayStatus, onDelete, fetchWeather, weatherStatus, getTemp, userAddData } from "../reducers/todoReducer";
 import Search from "../Search";
 import Pagination from 'react-paginate';
 import WeatherSet from '../WeatherSet'
@@ -38,13 +38,19 @@ class TodoList extends Component {
 
     this.state = {
       search_val: '',
-      temp: ''
+      temp: '',
+      content: '',
+      number: ''
     }
     this.onChangeSearch = this.onChangeSearch.bind(this)
     this.onHandleSearch = this.onHandleSearch.bind(this)
     this.onHandleDelete = this.onHandleDelete.bind(this)
     this.handlePageClick = this.handlePageClick.bind(this)
     this.fetchWeather = this.fetchWeather.bind(this)
+
+    this.onChangeContent = this.onChangeContent.bind(this)
+    this.onChangeNumber = this.onChangeNumber.bind(this)
+    this.onSubmit = this.onSubmit.bind(this)
     //this.myTimer = this.myTimer.bind(this)
   }
 
@@ -59,28 +65,28 @@ class TodoList extends Component {
 
     //SET INTERVAL METHOD FOR WEATHER API
 
-    this.interval = setInterval(() => {
-      const obj = {
-        q: 'Noida',
-        appid: 'd102dc7ecb892f7888141dfb21093f44'
-      }
-      this.props.fetchWeather(obj);
+    //   this.interval = setInterval(() => {
+    //     const obj = {
+    //       q: 'Noida',
+    //       appid: 'd102dc7ecb892f7888141dfb21093f44'
+    //     }
+    //     this.props.fetchWeather(obj);
 
-      //this.props.weatherStatus(false)
-      const myObject = this.props.weather.main
-      console.log(myObject)
-      for (var key in myObject) {
-        if (key === 'temp') {
+    //     //this.props.weatherStatus(false)
+    //     const myObject = this.props.weather.main
+    //     console.log(myObject)
+    //     for (var key in myObject) {
+    //       if (key === 'temp') {
 
-          this.props.getTemp(myObject[key])
-          // abc.setState({
-          //   temp: (myObject[key])
-          // })     
-        }
-      }
+    //         this.props.getTemp(myObject[key])
+    //         // abc.setState({
+    //         //   temp: (myObject[key])
+    //         // })     
+    //       }
+    //     }
 
-    }, 5000)
-   }
+    //   }, 5000)
+  }
 
   onChangeSearch(e) {
     debugger
@@ -171,6 +177,27 @@ class TodoList extends Component {
     //console.log(abc.state.temp)
 
   }
+
+  onChangeContent(e) {
+    this.setState({
+      content: e.target.value
+    })
+  }
+
+  onChangeNumber(e) {
+    this.setState({
+      number: e.target.value
+    })
+  }
+  onSubmit(e){
+    e.preventDefault()
+    const obj = {
+      content: this.state.content,
+      number: this.state.number
+    }
+    debugger
+    this.props.userAddData(obj)
+  }
   render() {
     const classes = 'tooltip-inner'
     return (
@@ -182,6 +209,25 @@ class TodoList extends Component {
             onChange={this.onChangeSearch}
           />
         </form>
+        <div>
+          <form onSubmit={this.onSubmit}>
+            <label>Content</label>
+            <input
+              placeholder="content"
+              value={this.state.content}
+              onChange={this.onChangeContent}
+            />
+            <br />
+            <label>Number</label>
+            <input
+              label="number"
+              placeholder="number"
+              value={this.state.number}
+              onChange={this.onChangeNumber}
+            />
+            <input type="submit"></input>
+          </form>
+        </div>
         <h3>TodoList</h3>
         <table className="table table-striped" style={{ marginTop: 20 }}>
           <thead>
@@ -243,7 +289,8 @@ const mapDispatchToProps = (dispatch) => {
     displayStatus: (status) => { dispatch(displayStatus(status)) },
     onDelete: (obj_new) => { dispatch(onDelete(obj_new)) },
     fetchWeather: (obj) => { dispatch(fetchWeather(obj)) },
-    getTemp: (obj) => { dispatch(getTemp(obj)) }
+    getTemp: (obj) => { dispatch(getTemp(obj)) },
+    userAddData: (obj) => {dispatch(userAddData(obj))}
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList)

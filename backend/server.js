@@ -6,17 +6,24 @@ const PORT = 4000
 
 let Todo = require('./todo.model')
 
+let User = require('./user.model')
+
 const mongoose = require('mongoose')
+
 const todoRoutes = express.Router()
 
 mongoose.connect('mongodb://127.0.0.1:27017/todos', { useNewUrlParser: true })
+
+
 const connection = mongoose.connection
 
 connection.once('open', function () {
   console.log("MongoDB databse connection established")
 })
 
-todoRoutes.route('/').post(function (req, res) {
+
+
+todoRoutes.route('/todo').post(function (req, res) {
   // Todo.find(function (err, todos) {
   //   if (err) {
   //     console.log(err)
@@ -117,11 +124,54 @@ todoRoutes.route('/delete').post(function (req, res) {
 })
 
 
+// Routes for User schema
+
+todoRoutes.route('/user/add').post(function (req, res) {
+  console.log(req.body)
+  let user = new User(req.body);
+  user.save()
+    .then(user => {
+      console.log("Added")
+      res.status(200).json({ 'user': 'user added sucessfully' })
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(400).send('Add new user failed')
+    })
+})
+
+todoRoutes.route('/user/delete').post(function(req, res){
+  User.remove({}, function(err){
+    if(err){
+      console.log(err)
+    }
+    else{
+      res.send('deleted')
+    }
+  })
+})
+
+todoRoutes.route('/user/get').get(function(req, res){
+  User.find(function(err, users){
+    if(err){
+      console.log(err)
+    }
+    else{
+      console.log(users)
+      res.json(users)
+    }
+  })
+})
+
+
+
+// Express Content
+
 app.use(cors())
 app.use(bodyParser.json())
 
 app.use('/todos', todoRoutes)
-
+//app.use('/users', userRoutes)
 
 app.listen(PORT, function () {
   console.log("Server is running on Port: " + PORT)

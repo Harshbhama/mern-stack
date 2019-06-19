@@ -16,12 +16,6 @@ let Todo = new Schema({
         type: Boolean
     }
 })
-// Todo.find({ todo_description: query }, function(err, user) {
-//     if (err) throw err;
-  
-//     // object of the user
-//     console.log(Todo);
-//   });
 
 Todo.plugin(mongoosePaginate);
 module.exports = mongoose.model('Todo', Todo)

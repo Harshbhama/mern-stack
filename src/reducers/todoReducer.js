@@ -8,7 +8,7 @@ const initialState = {
   id: '',
   page: 10,
   weather_data: '',
-  temp:''
+  temp:'',
 }
 
 export const VIEW_DATA_SUCCESS = 'VIEW_DATA_SUCCESS'
@@ -22,12 +22,14 @@ export const VIEW_WEATHER_DATA = 'VIEW_WEATHER_DATA'
 export const WEATHER_STATUS = 'WEATHER_STATUS'
 export const GET_TEMP = 'GET_TEMP'
 
+
+
 export const viewData = (page_obj) => {
   debugger
   console.log(page_obj)
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      axios.post('http://localhost:4000/todos/', page_obj)
+      axios.post('http://localhost:4000/todos/todo', page_obj)
         .then(response => {
           //console.log(response.data)
           var p = Math.ceil((response.data.total / 6))
@@ -100,6 +102,23 @@ export const fetchWeather = (data) => {
   }
 }
 
+export const userAddData = (props) => {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      axios.post('http://localhost:4000/todos/user/add', props)
+        .then(response => {
+          console.log(props)
+          resolve(true);
+
+
+        }).catch(error => {
+          //console.log(error)
+          reject(true);
+        })
+    })
+  }
+}
+
 export function viewDataSuccess(payload) {
   debugger
   return {
@@ -164,6 +183,7 @@ export function getTemp(payload){
     viewTemp: payload
   }
 }
+
 const ACTION_HANDLERS = {
   [VIEW_DATA_SUCCESS]: (state, action) => {
     return {
@@ -229,7 +249,6 @@ const ACTION_HANDLERS = {
       temp: action.viewTemp
     }
   }
-
 }
 
 export default function todoReducer(state = initialState, action) {

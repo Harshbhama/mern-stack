@@ -1,0 +1,51 @@
+npm install redux --save
+npm install react-redux --save
+npm install redux-thunk --save
+npm install redux-promise-middleware --saveBirla Cellulose
+
+npm install express body-parser cors mongoose
+npm install -g nodemon
+
+nodemon server
+
+
+
+sudo mongod --dbpath=/var/lib/mongodb
+
+ ps wuax | grep mongo
+
+
+mongod ---- to start mongodb server
+mongo --
+
+
+IN ui --
+npm install axios
+
+
+
+MongoDb commands ---- 
+
+> show dbs
+admin   0.078GB
+config  0.078GB
+local   0.078GB
+todos   0.078GB
+> use todos
+switched to db todos
+> show collections
+todos
+users
+> db.users.find()
+{ "_id" : ObjectId("5d09d0966529b1702b753dd9"), "content" : "Test", "number" : "123", "__v" : 0 }
+{ "_id" : ObjectId("5d09d0a26529b1702b753dda"), "content" : "Test1", "number" : "1234", "__v" : 0 }
+> db.users.drop()
+
+
+
+
+
+
+
+
+
