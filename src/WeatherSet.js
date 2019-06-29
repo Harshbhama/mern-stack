@@ -5,6 +5,8 @@ export default class WeatherSet extends React.Component{
         super(props)
     }
     render(){
+        debugger
+        console.log(this.props.temp)
         return(
             <div>
                 <span>Temperature is</span> {this.props.temp}

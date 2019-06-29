@@ -115,7 +115,7 @@ const ACTION_HANDLERS = {
     console.log(action.e)
     return {
       ...state,
-      todo_completed: !action.e.target.value
+      todo_completed: !initialState.todo_completed
     }
   }
 

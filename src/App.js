@@ -17,7 +17,7 @@ class App extends Component {
           <h1>Hello</h1>
           <ul>
             <li><Link to = '/' > Todolist</Link></li>
-            <li><Link to = '/edit/:id' > EditTodo</Link></li>
+            {/* <li><Link to = '/edit/:id' > EditTodo</Link></li> */}
             <li><Link to = '/create' > CreateTodo</Link></li>
           </ul>
           <Switch>

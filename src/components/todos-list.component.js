@@ -6,16 +6,16 @@ import axios from "axios";
 
 import { connect } from 'react-redux'
 import viewDetail from '../reducers/todoReducer'
-import { viewData, viewSeachData, searchStatus, displayStatus, onDelete, fetchWeather, weatherStatus, getTemp, userAddData } from "../reducers/todoReducer";
+import { viewData, viewSeachData, searchStatus, displayStatus, onDelete, fetchWeather, weatherStatus, getTemp, userAddData, onMarsImageChange, fetchMarsImage } from "../reducers/todoReducer";
 import Search from "../Search";
 import Pagination from 'react-paginate';
 import WeatherSet from '../WeatherSet'
-
 
 // import Alert from './../Alert'
 
 
 import { Tooltip } from 'reactstrap';
+import MarsImg from "../MarsImg";
 const Todo = props => (
   <tr>
     <td className={props.todo.todo_completed ? 'completed' : ''}>{props.todo.todo_description}</td>
@@ -51,6 +51,8 @@ class TodoList extends Component {
     this.onChangeContent = this.onChangeContent.bind(this)
     this.onChangeNumber = this.onChangeNumber.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
+    this.onMarsSubmit = this.onMarsSubmit.bind(this)
+    this.onHandleScroll = this.onHandleScroll.bind(this)
     //this.myTimer = this.myTimer.bind(this)
   }
 
@@ -87,7 +89,9 @@ class TodoList extends Component {
 
     //   }, 5000)
   }
-
+  componentDidUpdate() {
+    console.log(this.props.mars_val)
+  }
   onChangeSearch(e) {
     debugger
     this.setState({
@@ -162,12 +166,14 @@ class TodoList extends Component {
       this.props.fetchWeather(obj);
     }
     this.props.weatherStatus(false)
+    // console.log(this.props.weather)
     const myObject = this.props.weather.main
-    console.log(myObject)
+    //console.log(myObject)
     for (var key in myObject) {
       if (key === 'temp') {
 
         this.props.getTemp(myObject[key])
+        console.log(myObject[key])
         // abc.setState({
         //   temp: (myObject[key])
         // })     
@@ -189,7 +195,7 @@ class TodoList extends Component {
       number: e.target.value
     })
   }
-  onSubmit(e){
+  onSubmit(e) {
     e.preventDefault()
     const obj = {
       content: this.state.content,
@@ -197,6 +203,36 @@ class TodoList extends Component {
     }
     debugger
     this.props.userAddData(obj)
+    alert("Submitted");
+    document.getElementById("content").value = ''
+    document.getElementById("number").value = ''
+  }
+
+  async onMarsSubmit(e) {
+    debugger
+    console.log(this.props.mars_val)
+    e.preventDefault()
+    const obj = {
+      sol: this.props.mars_val,
+      api_key: 'eI7mgiK47XbXjBLQPA7dZTjcf53T2pJle6boCFcV'
+    }
+    await this.props.fetchMarsImage(obj);
+    //console.log(this.props.mars_img.photos)
+  }
+  onHandleScroll() {
+    var z = 10
+    // this.interval = setInterval(() => {
+      let temp = document.getElementById('sol')
+      var x = temp.getBoundingClientRect().x
+      var y = temp.getBoundingClientRect().y
+      window.scrollBy(0, y)
+      // z = z+10
+      // if(z>=y){
+      //   alert("YO")
+      //   clearInterval(this.interval._id)
+      // }
+    // }, 20)
+
   }
   render() {
     const classes = 'tooltip-inner'
@@ -209,10 +245,24 @@ class TodoList extends Component {
             onChange={this.onChangeSearch}
           />
         </form>
+        <div style={{ paddingLeft: '73%' }}>
+          <form onSubmit={this.onMarsSubmit}>
+            <label style={{ paddingRight: '10px' }}>Sol</label>
+            <input
+              type="text"
+              placeholder="sol"
+              value={this.props.mars_val}
+              onChange={(e) => this.props.onMarsImageChange(e)}
+            />
+            <input type="submit"></input>
+
+          </form>
+        </div>
         <div>
           <form onSubmit={this.onSubmit}>
             <label>Content</label>
             <input
+              id="content"
               placeholder="content"
               value={this.state.content}
               onChange={this.onChangeContent}
@@ -220,7 +270,7 @@ class TodoList extends Component {
             <br />
             <label>Number</label>
             <input
-              label="number"
+              id="number"
               placeholder="number"
               value={this.state.number}
               onChange={this.onChangeNumber}
@@ -262,6 +312,19 @@ class TodoList extends Component {
           temp={this.props.temp}
         // temp_detail = {this.props.weather.main.temp}
         />
+
+        <div id="sol">
+          {
+            this.props.mars_img ?
+              this.props.mars_img.photos.map(pic => {
+                return (<MarsImg
+                  pic={pic.img_src}
+                  onHandleScroll={this.onHandleScroll}
+                />)
+              })
+              : ''
+          }
+        </div>
       </div>
     )
   }
@@ -276,8 +339,11 @@ const mapStateToProps = (state) => {
     page: state.todoReducer.page,
     weather: state.todoReducer.weather_data,
     weather_status: state.todoReducer.weather_status,
-    temp: state.todoReducer.temp - 273
+    temp: state.todoReducer.temp - 273,
+    mars_val: state.todoReducer.mars_val,
+    mars_img: state.todoReducer.mars_img
   }
+
 
 }
 const mapDispatchToProps = (dispatch) => {
@@ -290,7 +356,9 @@ const mapDispatchToProps = (dispatch) => {
     onDelete: (obj_new) => { dispatch(onDelete(obj_new)) },
     fetchWeather: (obj) => { dispatch(fetchWeather(obj)) },
     getTemp: (obj) => { dispatch(getTemp(obj)) },
-    userAddData: (obj) => {dispatch(userAddData(obj))}
+    userAddData: (obj) => { dispatch(userAddData(obj)) },
+    onMarsImageChange: (obj) => { dispatch(onMarsImageChange(obj)) },
+    fetchMarsImage: (obj) => { dispatch(fetchMarsImage(obj)) }
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList)

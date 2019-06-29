@@ -8,7 +8,9 @@ const initialState = {
   id: '',
   page: 10,
   weather_data: '',
-  temp:'',
+  temp: '',
+  mars_img: '',
+  mars_val: ''
 }
 
 export const VIEW_DATA_SUCCESS = 'VIEW_DATA_SUCCESS'
@@ -21,8 +23,8 @@ export const SET_TOTAL_PAGE = 'SET_TOTAL_PAGE'
 export const VIEW_WEATHER_DATA = 'VIEW_WEATHER_DATA'
 export const WEATHER_STATUS = 'WEATHER_STATUS'
 export const GET_TEMP = 'GET_TEMP'
-
-
+export const MARS_IMAGE = 'MARS_IMAGE'
+export const MARS_IMAGE_CHANGE = 'MARS_IMAGE_CHANGE'
 
 export const viewData = (page_obj) => {
   debugger
@@ -34,7 +36,7 @@ export const viewData = (page_obj) => {
           //console.log(response.data)
           var p = Math.ceil((response.data.total / 6))
           //console.log(p)
-          dispatch(setTotolPage(p))  
+          dispatch(setTotolPage(p))
           dispatch(viewDataSuccess(response.data.docs));
           resolve(true);
 
@@ -87,7 +89,7 @@ export const onDelete = (payload) => {
 }
 
 export const fetchWeather = (data) => {
-  return(dispatch) => {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
       axios.get("http://api.openweathermap.org/data/2.5/weather?q=" + data.q + "&appid=" + data.appid)
         .then(response => {
@@ -118,6 +120,25 @@ export const userAddData = (props) => {
     })
   }
 }
+
+
+export const fetchMarsImage = (obj) => {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      axios.get("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=" + obj.sol + "&api_key=" + obj.api_key)
+        .then(response => {
+          //console.log(response.data)
+          dispatch(fetchMarsImageData(response.data))
+          resolve(true);
+        }).catch(error => {
+          //console.log(error)
+          reject(true);
+        })
+    })
+  }
+}
+
+
 
 export function viewDataSuccess(payload) {
   debugger
@@ -153,8 +174,8 @@ export function displayStatus(status) {
     status: status
   }
 }
-export function weatherStatus(status){
-  return{
+export function weatherStatus(status) {
+  return {
     type: WEATHER_STATUS,
     status: status
   }
@@ -165,25 +186,36 @@ export function viewDeleteData(payload) {
     viewDeleteDataDetails: payload
   }
 }
-export function setTotolPage(payload){
-  return{
+export function setTotolPage(payload) {
+  return {
     type: SET_TOTAL_PAGE,
     page: payload
   }
 }
-export function viewWeatherData(payload){
-  return{
+export function viewWeatherData(payload) {
+  return {
     type: VIEW_WEATHER_DATA,
     viewWeatherDataDetails: payload
   }
 }
-export function getTemp(payload){
-  return{
+export function getTemp(payload) {
+  return {
     type: GET_TEMP,
     viewTemp: payload
   }
 }
-
+export function fetchMarsImageData(payload) {
+  return {
+    type: MARS_IMAGE,
+    marsImage: payload
+  }
+}
+export function onMarsImageChange(payload) {
+  return {
+    type: MARS_IMAGE_CHANGE,
+    e: payload
+  }
+}
 const ACTION_HANDLERS = {
   [VIEW_DATA_SUCCESS]: (state, action) => {
     return {
@@ -219,7 +251,7 @@ const ACTION_HANDLERS = {
     }
   },
   [WEATHER_STATUS]: (state, action) => {
-    return{
+    return {
       ...state,
       weather_status: action.status
     }
@@ -231,22 +263,35 @@ const ACTION_HANDLERS = {
     }
   },
   [SET_TOTAL_PAGE]: (state, action) => {
-    return{
+    return {
       ...state,
       page: action.page
     }
   },
   [VIEW_WEATHER_DATA]: (state, action) => {
-    return{
+    return {
       ...state,
       weather_data: action.viewWeatherDataDetails
     }
   },
 
   [GET_TEMP]: (state, action) => {
-    return{
+    return {
       ...state,
       temp: action.viewTemp
+    }
+  },
+  [MARS_IMAGE]: (state, action) => {
+    return {
+      ...state,
+      mars_img: action.marsImage
+    }
+  },
+  [MARS_IMAGE_CHANGE]: (state, action) => {
+    debugger
+    return{
+      ...state,
+      mars_val: action.e.target.value
     }
   }
 }

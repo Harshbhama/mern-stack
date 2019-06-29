@@ -74,7 +74,7 @@ const ACTION_HANDLERS = {
     debugger
     return {
       ...state,
-      todo_completed: action.e.target.value
+      todo_completed: !initialState.todo_completed
     }
   }
 
