@@ -10,7 +10,8 @@ const initialState = {
   weather_data: '',
   temp: '',
   mars_img: '',
-  mars_val: ''
+  mars_val: '',
+  isActive: false
 }
 
 export const VIEW_DATA_SUCCESS = 'VIEW_DATA_SUCCESS'
@@ -25,6 +26,7 @@ export const WEATHER_STATUS = 'WEATHER_STATUS'
 export const GET_TEMP = 'GET_TEMP'
 export const MARS_IMAGE = 'MARS_IMAGE'
 export const MARS_IMAGE_CHANGE = 'MARS_IMAGE_CHANGE'
+export const LOADER_STATE = 'LOADER_STATE'
 
 export const viewData = (page_obj) => {
   debugger
@@ -38,6 +40,7 @@ export const viewData = (page_obj) => {
           //console.log(p)
           dispatch(setTotolPage(p))
           dispatch(viewDataSuccess(response.data.docs));
+          dispatch(isActiveLoader(false))
           resolve(true);
 
 
@@ -57,7 +60,9 @@ export const viewSeachData = (obj) => {
         .then(response => {
           //console.log(response)
           console.log(response.data)
+       
           dispatch(viewSearchSuccess(response.data));
+          dispatch(isActiveLoader(false))
           resolve(true);
 
 
@@ -77,8 +82,8 @@ export const onDelete = (payload) => {
           console.log("ONDELETE")
           console.log(response.data)
           dispatch(viewDeleteData(response.data))
-          resolve(true);
-
+          dispatch(isActiveLoader(false))
+          resolve(true);    
 
         }).catch(error => {
           //console.log(error)
@@ -128,7 +133,9 @@ export const fetchMarsImage = (obj) => {
       axios.get("https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=" + obj.sol + "&api_key=" + obj.api_key)
         .then(response => {
           //console.log(response.data)
+          
           dispatch(fetchMarsImageData(response.data))
+          dispatch(isActiveLoader(false))
           resolve(true);
         }).catch(error => {
           //console.log(error)
@@ -216,6 +223,12 @@ export function onMarsImageChange(payload) {
     e: payload
   }
 }
+export function isActiveLoader(payload){
+  return{
+    type: LOADER_STATE,
+    loadState: payload
+  }
+}
 const ACTION_HANDLERS = {
   [VIEW_DATA_SUCCESS]: (state, action) => {
     return {
@@ -292,6 +305,12 @@ const ACTION_HANDLERS = {
     return{
       ...state,
       mars_val: action.e.target.value
+    }
+  },
+  [LOADER_STATE]: (state, action) => {
+    return{
+      ...state,
+      isActive: action.loadState
     }
   }
 }

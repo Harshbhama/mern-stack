@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 export default class MarsImg extends Component {
     componentDidMount(){
         this.props.onHandleScroll()
+        
     }
     render() {
         return (
