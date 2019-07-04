@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import TodoList from "./components/todos-list.component"
 import EditTodo from "./components/edit-todo.component"
 import CreateTodo from "./components/create-todo.component"
-
+import TestAuth from "./test/TestAuth"
 
 
 import { Link } from "react-router-dom"
@@ -24,6 +24,7 @@ class App extends Component {
             <Route exact path = '/' component = {TodoList} />
             <Route exact path = '/edit/:id' component = {EditTodo} />
             <Route exact path = '/create' component = {CreateTodo} />
+            <Route exact path = '/test' component = {TestAuth}/>
           </Switch>
         </div>
           

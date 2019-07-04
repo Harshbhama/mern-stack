@@ -27,6 +27,7 @@ export const GET_TEMP = 'GET_TEMP'
 export const MARS_IMAGE = 'MARS_IMAGE'
 export const MARS_IMAGE_CHANGE = 'MARS_IMAGE_CHANGE'
 export const LOADER_STATE = 'LOADER_STATE'
+export const MARS_IMAGE_CHANGE_VALNULL = 'MARS_IMAGE_CHANGE_VALNULL'
 
 export const viewData = (page_obj) => {
   debugger
@@ -136,6 +137,7 @@ export const fetchMarsImage = (obj) => {
           
           dispatch(fetchMarsImageData(response.data))
           dispatch(isActiveLoader(false))
+          dispatch(onMarsImageChangenull(''))
           resolve(true);
         }).catch(error => {
           //console.log(error)
@@ -223,6 +225,12 @@ export function onMarsImageChange(payload) {
     e: payload
   }
 }
+export function onMarsImageChangenull(payload){
+  return{
+    type: MARS_IMAGE_CHANGE_VALNULL,
+    value: payload
+  }
+}
 export function isActiveLoader(payload){
   return{
     type: LOADER_STATE,
@@ -305,6 +313,12 @@ const ACTION_HANDLERS = {
     return{
       ...state,
       mars_val: action.e.target.value
+    }
+  },
+  [MARS_IMAGE_CHANGE_VALNULL]: (state, action) => {
+    return{
+      ...state,
+      mars_val: action.value
     }
   },
   [LOADER_STATE]: (state, action) => {

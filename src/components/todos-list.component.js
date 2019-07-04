@@ -231,21 +231,26 @@ class TodoList extends Component {
     }
     await this.props.isActiveLoader(true)
     await this.props.fetchMarsImage(obj);
+    
     //console.log(this.props.mars_img.photos)
   }
   onHandleScroll() {
     var z = 10
-    // this.interval = setInterval(() => {
     let temp = document.getElementById('sol')
     var x = temp.getBoundingClientRect().x
     var y = temp.getBoundingClientRect().y
-    window.scrollBy(0, y)
-    // z = z+10
-    // if(z>=y){
-    //   alert("YO")
-    //   clearInterval(this.interval._id)
-    // }
-    // }, 20)
+    //window.scrollBy(0, y)
+
+    window.scroll({
+      top: 2500,
+      left: 0,
+      behavior: "smooth"
+    })
+    window.scrollBy({
+      top: y,
+      left: 0,
+      behavior: "smooth"
+    })
 
   }
   render() {
@@ -269,6 +274,7 @@ class TodoList extends Component {
             <form onSubmit={this.onMarsSubmit}>
               <label style={{ paddingRight: '10px' }}>Sol</label>
               <input
+                id = "mars-text"
                 type="text"
                 placeholder="sol"
                 value={this.props.mars_val}

@@ -6,6 +6,7 @@ export default class MarsImg extends Component {
         
     }
     render() {
+      
         return (
             <div>
                 <img style={{ height: '500px', width: '500px' }} src={this.props.pic} />

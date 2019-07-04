@@ -3,10 +3,13 @@ const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const PORT = 4000
+const bycrpt = require('bcryptjs')
 
 let Todo = require('./todo.model')
-
 let User = require('./user.model')
+let Login = require('./login.model')
+const config = require('config')
+const jwt = require('jsonwebtoken')
 
 const mongoose = require('mongoose')
 
@@ -140,28 +143,79 @@ todoRoutes.route('/user/add').post(function (req, res) {
     })
 })
 
-todoRoutes.route('/user/delete').post(function(req, res){
-  User.remove({}, function(err){
-    if(err){
+todoRoutes.route('/user/delete').post(function (req, res) {
+  User.remove({}, function (err) {
+    if (err) {
       console.log(err)
     }
-    else{
+    else {
       res.send('deleted')
     }
   })
 })
 
-todoRoutes.route('/user/get').get(function(req, res){
-  User.find(function(err, users){
-    if(err){
+todoRoutes.route('/user/get').get(function (req, res) {
+  User.find(function (err, users) {
+    if (err) {
       console.log(err)
     }
-    else{
+    else {
       console.log(users)
       res.json(users)
     }
   })
 })
+
+//Test Auth
+
+todoRoutes.route('/login/add').post(function (req, res) {
+  console.log(req.body)
+  const { name, email, password } = req.body
+  Login.findOne({ email })
+    .then(login => {
+      if (login) return res.status(400).json({ msg: 'User already exists' })
+
+      const newLogin = new Login({
+        name,
+        email,
+        password
+      })
+
+      bycrpt.genSalt(10, (err, salt) => {
+        bycrpt.hash(newLogin.password, salt, (err, hash) => {
+          if (err) {
+            console.log(err)
+          }
+          newLogin.password = hash
+          newLogin.save()
+            .then(login => {
+              jwt.sign(
+                { id: login.id },
+                config.get('jwtSecret'),
+                { expiresIn: 3600 },
+                (err, token) => {
+                  if (err) {
+                    console.log(err)
+                  }
+                  console.log("Token = " + token)
+                  res.json({
+                    token,
+                    login: {
+                      id: login.id,
+                      name: login.name,
+                      email: login.email
+                    }
+                  })
+                }
+              )
+            })
+        })
+      })
+
+    })
+})
+
+
 
 
 

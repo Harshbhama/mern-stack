@@ -43,6 +43,11 @@ users
 
 
 
+Login-Auth ------------------
+
+npm i bcryptjs
+npm i jsonwebtoken
+npm i config
 
 
 
