@@ -8,13 +8,18 @@ export default class TestAuth extends Component {
     this.state = {
       password: '',
       name: '',
-      email: ''
+      email: '',
+      email_new: '',
+      password_new: ''
     }
 
     this.onSubmit = this.onSubmit.bind(this)
+    this.onSubmitNew = this.onSubmitNew.bind(this)
     this.onChangeName = this.onChangeName.bind(this)
     this.onChangeEmail = this.onChangeEmail.bind(this)
     this.onChangePassword = this.onChangePassword.bind(this)
+    this.onChangeEmailNew = this.onChangeEmailNew.bind(this)
+    this.onChangePasswordNew = this.onChangePasswordNew.bind(this)
   }
 
   onSubmit(e) {
@@ -34,9 +39,32 @@ export default class TestAuth extends Component {
 
       }).catch(error => {
         console.log(error)
-      
+
       })
   }
+
+
+  onSubmitNew(e) {
+    e.preventDefault()
+
+    const props = {
+      email: this.state.email_new,
+      password: this.state.password_new
+    }
+
+
+    axios.post('http://localhost:4000/todos/login/get', props)
+      .then(response => {
+        //console.log(props)
+        console.log("Done")
+
+      }).catch(error => {
+        console.log(error)
+
+      })
+  }
+
+
   onChangeName(e) {
     this.setState({
       name: e.target.value
@@ -50,6 +78,17 @@ export default class TestAuth extends Component {
   onChangePassword(e) {
     this.setState({
       password: e.target.value
+    })
+  }
+
+  onChangeEmailNew(e) {
+    this.setState({
+      email_new: e.target.value
+    })
+  }
+  onChangePasswordNew(e) {
+    this.setState({
+      password_new: e.target.value
     })
   }
 
@@ -79,6 +118,26 @@ export default class TestAuth extends Component {
             onChange={(e) => this.onChangePassword(e)}
           />
           <input type="submit" />
+        </form>
+
+
+        <form onSubmit = {this.onSubmitNew}>
+
+          <label>Email</label>
+          <input
+            type="text"
+            placeholder="email"
+            value={this.state.email_new}
+            onChange={(e) => this.onChangeEmailNew(e)}
+          />
+          <label>Password</label>
+          <input
+            type="number"
+            placeholder="password"
+            value={this.state.password_new}
+            onChange={(e) => this.onChangePasswordNew(e)}
+          />
+           <input type="submit" />
         </form>
       </div>
     )

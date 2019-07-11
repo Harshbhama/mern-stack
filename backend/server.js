@@ -5,6 +5,8 @@ const cors = require('cors')
 const PORT = 4000
 const bycrpt = require('bcryptjs')
 
+const auth = require('./middleware/auth')
+
 let Todo = require('./todo.model')
 let User = require('./user.model')
 let Login = require('./login.model')
@@ -60,7 +62,7 @@ todoRoutes.route('/:id').get(function (req, res) {
   })
 });
 
-todoRoutes.route('/add').post(function (req, res) {
+todoRoutes.route('/add', auth).post(function (req, res) {
   console.log(req.body)
   let todo = new Todo(req.body);
   todo.save()
@@ -110,7 +112,7 @@ todoRoutes.route('/search').post(function (req, res) {
 
 })
 
-todoRoutes.route('/delete').post(function (req, res) {
+todoRoutes.route('/delete').post(auth, function (req, res) {
   console.log(req.body)
   Todo.deleteOne({ _id: req.body.id }, function (err, todo) {
     if (err) {
@@ -216,6 +218,63 @@ todoRoutes.route('/login/add').post(function (req, res) {
 })
 
 
+
+
+
+
+todoRoutes.route('/login/get').post(function (req, res) {
+  console.log(req.body)
+  const { email, password } = req.body
+  Login.findOne({ email })
+    .then(login => {
+      if (!login) {
+        console.log("USER DOESNOT EXISTS")
+        return res.status(400).json({ msg: 'User doesnot exists' })}
+
+      //Validate Password
+
+      bycrpt.compare(password, login.password)
+      .then(isMatch => {
+        if(!isMatch){ 
+          console.log("INVALID CREDENTIALS")
+          return res.status(400).json({ msg: 'Invalid Credentials'})
+      }
+        jwt.sign(
+          { id: login.id },
+          config.get('jwtSecret'),
+          { expiresIn: 3600 },
+          (err, token) => {
+            if (err) {
+              console.log(err)
+            }
+            console.log("Token = " + token)
+            res.json({
+              token,
+              login: {
+                id: login.id,
+                name: login.name,
+                email: login.email
+              }
+            })
+          }
+        )
+      })
+
+    })
+})
+
+// todoRoutes.route('/login/test').get(auth, function(res, req) {
+//   console.log(req.login)
+//   Login.findById(req.login.id)
+//   .select('-password')
+//   .then(login => res.json(login))
+// })
+
+todoRoutes.get('/login/test', auth, (req, res) => {
+  Login.findById(req.login.id)
+    .select('-password')
+    .then(login => res.json(login));
+});
 
 
 
