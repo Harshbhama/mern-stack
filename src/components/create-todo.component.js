@@ -3,7 +3,7 @@ import axios from 'axios'
 
 import { connect } from "react-redux"
 
-import { createData, onChangeTodoDescription, onChangeTodoResponsible, onChangeTodoPriority, onChangeTodoCompleted } from '../reducers/createReducer'
+import { createData, onChangeTodoDescription, onChangeTodoResponsible, onChangeTodoPriority, onChangeTodoCompleted, isScrollActive } from '../reducers/createReducer'
 
 class CreateTodo extends Component {
 
@@ -22,6 +22,7 @@ class CreateTodo extends Component {
       todo_completed: this.props.todo_completed
     }
     this.props.createData(newTodo)
+    this.props.isScrollActive(false)
     window.history.back();
 
   }
@@ -114,7 +115,8 @@ const mapStateToProps = (state) => {
     todo_description: state.createReducer.todo_description,
     todo_responsible: state.createReducer.todo_responsible,
     todo_priority: state.createReducer.todo_priority,
-    todo_completed: state.createReducer.todo_completed
+    todo_completed: state.createReducer.todo_completed,
+    
   }
 }
 
@@ -124,7 +126,8 @@ const mapDispatchToProps = (dispatch) => {
     onChangeTodoResponsible: (props) => { dispatch(onChangeTodoResponsible(props)) },
     onChangeTodoPriority: (props) => { dispatch(onChangeTodoPriority(props)) },
     onChangeTodoCompleted: (props) => { dispatch(onChangeTodoCompleted(props)) },
-    createData: (props) => { dispatch(createData(props)) }
+    createData: (props) => { dispatch(createData(props)) },
+    isScrollActive: (obj) => { dispatch(isScrollActive(obj)) }
   }
 }
 

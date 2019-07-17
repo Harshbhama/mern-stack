@@ -3,13 +3,15 @@ const initialState = {
   todo_description: '',
   todo_responsible: '',
   todo_priority: '',
-  todo_completed: false
+  todo_completed: false,
+  isScroll: false
 }
 
 const ON_CHANGE_DESCRIPTION = 'ON_CHANGE_DESCRIPTION'
 const ON_CHANGE_RESPONSIBLE = 'ON_CHANGE_RESPONSIBLE'
 const ON_CHANGE_PRIORITY = 'ON_CHANGE_PRIORITY'
 const ON_CHANGE_COMPLETED = 'ON_CHANGE_COMPLETED'
+export const SCROLL_ACTIVE = 'SCROLL_ACTIVE'
 
 export const createData = (obj) => {
   return (dispatch) => {
@@ -49,6 +51,12 @@ export function onChangeTodoCompleted(payload) {
     e: payload
   }
 }
+export function isScrollActive(payload) {
+  return {
+    type: SCROLL_ACTIVE,
+    scrollstate: payload
+  }
+}
 const ACTION_HANDLERS = {
 
   [ON_CHANGE_DESCRIPTION]: (state, action) => {
@@ -75,6 +83,12 @@ const ACTION_HANDLERS = {
     return {
       ...state,
       todo_completed: !initialState.todo_completed
+    }
+  },
+  [SCROLL_ACTIVE]: (state, action) => {
+    return {
+      ...state,
+      isScroll: action.scrollstate
     }
   }
 

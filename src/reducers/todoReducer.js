@@ -11,7 +11,8 @@ const initialState = {
   temp: '',
   mars_img: '',
   mars_val: '',
-  isActive: false
+  isActive: false,
+  isScroll: false
 }
 
 export const VIEW_DATA_SUCCESS = 'VIEW_DATA_SUCCESS'
@@ -28,6 +29,7 @@ export const MARS_IMAGE = 'MARS_IMAGE'
 export const MARS_IMAGE_CHANGE = 'MARS_IMAGE_CHANGE'
 export const LOADER_STATE = 'LOADER_STATE'
 export const MARS_IMAGE_CHANGE_VALNULL = 'MARS_IMAGE_CHANGE_VALNULL'
+export const SCROLL_ACTIVE = 'SCROLL_ACTIVE'
 
 export const viewData = (page_obj) => {
   debugger
@@ -237,6 +239,12 @@ export function isActiveLoader(payload){
     loadState: payload
   }
 }
+export function isScrollActive(payload){
+  return{
+    type: SCROLL_ACTIVE,
+    scrollstate: payload
+  }
+}
 const ACTION_HANDLERS = {
   [VIEW_DATA_SUCCESS]: (state, action) => {
     return {
@@ -325,6 +333,12 @@ const ACTION_HANDLERS = {
     return{
       ...state,
       isActive: action.loadState
+    }
+  },
+  [SCROLL_ACTIVE]: (state, action) => {
+    return{
+      ...state,
+      isScroll: action.scrollstate
     }
   }
 }

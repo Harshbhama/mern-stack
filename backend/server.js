@@ -112,7 +112,7 @@ todoRoutes.route('/search').post(function (req, res) {
 
 })
 
-todoRoutes.route('/delete').post(auth, function (req, res) {
+todoRoutes.route('/delete').post(function (req, res) {
   console.log(req.body)
   Todo.deleteOne({ _id: req.body.id }, function (err, todo) {
     if (err) {

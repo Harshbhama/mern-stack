@@ -7,6 +7,7 @@ import axios from "axios";
 import { connect } from 'react-redux'
 import viewDetail from '../reducers/todoReducer'
 import { viewData, viewSeachData, searchStatus, displayStatus, onDelete, fetchWeather, weatherStatus, getTemp, userAddData, onMarsImageChange, fetchMarsImage, isActiveLoader } from "../reducers/todoReducer";
+import { isScrollActive } from "../reducers/createReducer";
 import Search from "../Search";
 import Pagination from 'react-paginate';
 import WeatherSet from '../WeatherSet';
@@ -66,9 +67,6 @@ class TodoList extends Component {
 
     this.props.viewData(page_obj)
     this.props.weatherStatus(true)
-
-
-
     //SET INTERVAL METHOD FOR WEATHER API
 
     // this.interval = setInterval(() => {
@@ -95,9 +93,9 @@ class TodoList extends Component {
   }
   componentDidUpdate() {
     console.log(this.props.mars_val)
-    //this.props.isActiveLoader(false)
+    //this.props.isScrollActive(false)
   }
-  
+
   onChangeSearch(e) {
     debugger
     this.setState({
@@ -231,7 +229,9 @@ class TodoList extends Component {
     }
     await this.props.isActiveLoader(true)
     await this.props.fetchMarsImage(obj);
-    
+    await this.props.isScrollActive(true)
+
+
     //console.log(this.props.mars_img.photos)
   }
   onHandleScroll() {
@@ -251,7 +251,7 @@ class TodoList extends Component {
       left: 0,
       behavior: "smooth"
     })
-
+    //this.props.isScrollActive(false)
   }
   render() {
     const classes = 'tooltip-inner'
@@ -274,7 +274,7 @@ class TodoList extends Component {
             <form onSubmit={this.onMarsSubmit}>
               <label style={{ paddingRight: '10px' }}>Sol</label>
               <input
-                id = "mars-text"
+                id="mars-text"
                 type="text"
                 placeholder="sol"
                 value={this.props.mars_val}
@@ -344,15 +344,18 @@ class TodoList extends Component {
         </LoadingOverlay>
         <div id="sol">
           {
-            this.props.mars_img ?
-              this.props.mars_img.photos.map(pic => {
-                return (<MarsImg
-                  pic={pic.img_src}
-                  onHandleScroll={this.onHandleScroll}
-                // isActiveLoader={this.props.isActiveLoader}
-                // isActive={this.props.isActive}
-                />)
-              })
+            this.props.isScroll ?
+              this.props.mars_img ?
+                this.props.mars_img.photos.map(pic => {
+                  return (<MarsImg
+                    pic={pic.img_src}
+                    onHandleScroll={this.onHandleScroll}
+                    isScrollActive={this.props.isScrollActive}
+                  // isActiveLoader={this.props.isActiveLoader}
+                  // isActive={this.props.isActive}
+                  />)
+                })
+                : ''
               : ''
           }
         </div>
@@ -375,7 +378,8 @@ const mapStateToProps = (state) => {
     temp: state.todoReducer.temp - 273,
     mars_val: state.todoReducer.mars_val,
     mars_img: state.todoReducer.mars_img,
-    isActive: state.todoReducer.isActive
+    isActive: state.todoReducer.isActive,
+    isScroll: state.createReducer.isScroll
   }
 
 
@@ -393,7 +397,8 @@ const mapDispatchToProps = (dispatch) => {
     userAddData: (obj) => { dispatch(userAddData(obj)) },
     onMarsImageChange: (obj) => { dispatch(onMarsImageChange(obj)) },
     fetchMarsImage: (obj) => { dispatch(fetchMarsImage(obj)) },
-    isActiveLoader: (obj) => { dispatch(isActiveLoader(obj)) }
+    isActiveLoader: (obj) => { dispatch(isActiveLoader(obj)) },
+    isScrollActive: (obj) => { dispatch(isScrollActive(obj)) }
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TodoList)
